@@ -54,6 +54,7 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
 @synthesize hasAudioTrack = _hasAudioTrack;
 @synthesize encodingLiveVideo = _encodingLiveVideo;
 @synthesize shouldPassthroughAudio = _shouldPassthroughAudio;
+@synthesize didProcessFrameAtTimeBlock;
 @synthesize completionBlock;
 @synthesize failureBlock;
 @synthesize videoInputReadyCallback;
@@ -810,6 +811,10 @@ NSString *const kGPUImageColorSwizzlingFragmentShaderString = SHADER_STRING
             
             previousFrameTime = frameTime;
             
+            if (didProcessFrameAtTimeBlock) {
+                didProcessFrameAtTimeBlock(frameTime);
+            }
+
             if (![GPUImageContext supportsFastTextureUpload])
             {
                 CVPixelBufferRelease(pixel_buffer);
