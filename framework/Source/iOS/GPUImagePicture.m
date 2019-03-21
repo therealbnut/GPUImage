@@ -120,6 +120,7 @@
     
     GLubyte *imageData = NULL;
     CFDataRef dataFromImageDataProvider = NULL;
+    CFMutableDataRef mutableDataRef = NULL;
     GLenum format = GL_BGRA;
     BOOL isLitteEndian = YES;
     BOOL alphaFirst = NO;
@@ -193,6 +194,10 @@
     }
 	
 	if (removePremultiplication && premultiplied) {
+        // Create a mutable copy of the data
+        mutableDataRef = CFDataCreateMutableCopy(0, 0, dataFromImageDataProvider);
+        imageData = (GLubyte *)CFDataGetMutableBytePtr(mutableDataRef);
+        
 		NSUInteger	totalNumberOfPixels = round(pixelSizeToUseForTexture.width * pixelSizeToUseForTexture.height);
 		uint32_t	*pixelP = (uint32_t *)imageData;
 		uint32_t	pixel;
@@ -276,6 +281,10 @@
         if (dataFromImageDataProvider)
         {
             CFRelease(dataFromImageDataProvider);
+        }
+        if (mutableDataRef)
+        {
+            CFRelease(mutableDataRef);
         }
     }
     
