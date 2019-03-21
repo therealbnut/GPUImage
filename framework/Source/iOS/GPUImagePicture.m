@@ -120,6 +120,7 @@
     
     GLubyte *imageData = NULL;
     CFDataRef dataFromImageDataProvider = NULL;
+    CFMutableDataRef mutableDataRef = NULL;
     GLenum format = GL_BGRA;
     BOOL isLitteEndian = YES;
     BOOL alphaFirst = NO;
@@ -189,7 +190,8 @@
     {
         // Access the raw image bytes directly
         dataFromImageDataProvider = CGDataProviderCopyData(CGImageGetDataProvider(newImageSource));
-        imageData = (GLubyte *)CFDataGetBytePtr(dataFromImageDataProvider);
+        mutableDataRef = CFDataCreateMutableCopy(0, 0, dataFromImageDataProvider);
+        imageData = (GLubyte *)CFDataGetMutableBytePtr(mutableDataRef);
     }
 	
 	if (removePremultiplication && premultiplied) {
@@ -276,6 +278,10 @@
         if (dataFromImageDataProvider)
         {
             CFRelease(dataFromImageDataProvider);
+        }
+        if (mutableDataRef)
+        {
+            CFRelease(mutableDataRef);
         }
     }
     
