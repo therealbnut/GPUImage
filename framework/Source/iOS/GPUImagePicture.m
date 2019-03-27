@@ -194,9 +194,11 @@
     }
 	
 	if (removePremultiplication && premultiplied) {
-        // Create a mutable copy of the data
-        mutableDataRef = CFDataCreateMutableCopy(0, 0, dataFromImageDataProvider);
-        imageData = (GLubyte *)CFDataGetMutableBytePtr(mutableDataRef);
+        // Create a mutable copy of the data if it originated from `CGImageGetDataProvider`
+        if(dataFromImageDataProvider != NULL) {
+            mutableDataRef = CFDataCreateMutableCopy(0, 0, dataFromImageDataProvider);
+            imageData = (GLubyte *)CFDataGetMutableBytePtr(mutableDataRef);
+        }
         
 		NSUInteger	totalNumberOfPixels = round(pixelSizeToUseForTexture.width * pixelSizeToUseForTexture.height);
 		uint32_t	*pixelP = (uint32_t *)imageData;
